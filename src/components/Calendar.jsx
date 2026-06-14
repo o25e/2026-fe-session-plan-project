@@ -9,6 +9,8 @@ function Calendar({selectedDate, setSelectedDate, todos}) {
 
     const formatDate = (date) => date.toISOString().split("T")[0];
 
+    const today = new Date();
+
     const firstDay = new Date(year, month, 1).getDay();
     const lastDate = new Date(year, month + 1, 0).getDate();
 
@@ -33,15 +35,44 @@ function Calendar({selectedDate, setSelectedDate, todos}) {
             selectedDate.getMonth() === month &&
             selectedDate.getDate() === i;
 
+        const isToday =
+            today.getFullYear() === year &&
+            today.getMonth() === month &&
+            today.getDate() === i;
+
         const dateStr = formatDate(new Date(year, month, i));
         const hasTodo = todos.some((todo) => todo.date === dateStr);
 
         days.push(
             <div key={i} className={className}>
                 <div
-                    className={isSelected ? "selected" : ""}
                     onClick={() => setSelectedDate(new Date(year, month, i))}
-                    style={{ position: "relative" }}
+                    style={{
+                        position: "relative",
+                        width: "30px",
+                        height: "30px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: "50%",
+                        fontWeight: "500",
+                        cursor: "pointer",
+
+                        // 상태별 UI
+                        backgroundColor: isToday
+                            ? "#f97316"
+                            : "transparent",
+
+                        color: isToday ? "white" : "black",
+
+                        border: isSelected
+                            ? isToday
+                                ? "2px solid #575757"
+                                : "2px solid #575757"
+                            : isToday
+                            ? "2px solid transparent"
+                            : "none",
+                    }}
                 >
                     {i}
 
