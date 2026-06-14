@@ -5,8 +5,12 @@ function Main() {
     const [todos, setTodos] = useState([]);
     const [input, setInput] = useState("");
 
+    const [selectedDate, setSelectedDate] = useState(new Date());
+
     const [editingId, setEditingId] = useState(null);
     const [editText, setEditText] = useState("");
+
+    const formDate = (date) => date.toISOString().split("T")[0];
 
     const addTodo = () => {
         if (!input.trim()) return;
@@ -17,6 +21,7 @@ function Main() {
                 id: Date.now(),
                 text: input,
                 completed: false,
+                date: formDate(selectedDate),
             },
         ]);
 
@@ -27,10 +32,7 @@ function Main() {
         setTodos(
             todos.map((todo) =>
                 todo.id === id
-                    ? {
-                          ...todo,
-                          completed: !todo.completed,
-                      }
+                    ? { ...todo, completed: !todo.completed }
                     : todo
             )
         );
@@ -78,7 +80,10 @@ function Main() {
             <div className="mt-10 flex justify-center gap-8 px-4 pb-10">
                 {/* 달력 */}
                 <div className="rounded-3xl bg-white p-6 shadow">
-                    <Calendar />
+                    <Calendar
+                        selectedDate={selectedDate}
+                        setSelectedDate={setSelectedDate}
+                    />
                 </div>
 
                 {/* 할 일 목록 */}
@@ -107,7 +112,9 @@ function Main() {
 
                     {/* 할 일 목록 */}
                     <div className="space-y-3">
-                        {todos.map((todo) => (
+                        {todos
+                            .filter((todo) => todo.date === formDate(selectedDate))
+                            .map((todo) => (
                             <div
                                 key={todo.id}
                                 className="rounded-xl bg-orange-100 p-4"

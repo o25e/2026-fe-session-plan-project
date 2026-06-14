@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../styles/Calendar.css";
 
-function Calendar() {
+function Calendar({selectedDate, setSelectedDate}) {
     const [now, setNow] = useState(new Date());
 
     const year = now.getFullYear();
@@ -26,9 +26,19 @@ function Calendar() {
         if (week === 0) className = "red";
         if (week === 6) className = "blue";
 
+        const isSelected =
+            selectedDate.getFullYear() === year &&
+            selectedDate.getMonth() === month &&
+            selectedDate.getDate() === i;
+
         days.push(
             <div key={i} className={className}>
-                {i}
+                <div
+                    className={isSelected ? "selected" : ""}
+                    onClick={() => setSelectedDate(new Date(year, month, i))}
+                >
+                    {i}
+                </div>
             </div>
         );
     }
