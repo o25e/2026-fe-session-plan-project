@@ -83,6 +83,7 @@ function Main() {
                     <Calendar
                         selectedDate={selectedDate}
                         setSelectedDate={setSelectedDate}
+                        todos={todos}
                     />
                 </div>
 

@@ -1,11 +1,13 @@
 import { useState } from "react";
 import "../styles/Calendar.css";
 
-function Calendar({selectedDate, setSelectedDate}) {
+function Calendar({selectedDate, setSelectedDate, todos}) {
     const [now, setNow] = useState(new Date());
 
     const year = now.getFullYear();
     const month = now.getMonth();
+
+    const formatDate = (date) => date.toISOString().split("T")[0];
 
     const firstDay = new Date(year, month, 1).getDay();
     const lastDate = new Date(year, month + 1, 0).getDate();
@@ -31,13 +33,32 @@ function Calendar({selectedDate, setSelectedDate}) {
             selectedDate.getMonth() === month &&
             selectedDate.getDate() === i;
 
+        const dateStr = formatDate(new Date(year, month, i));
+        const hasTodo = todos.some((todo) => todo.date === dateStr);
+
         days.push(
             <div key={i} className={className}>
                 <div
                     className={isSelected ? "selected" : ""}
                     onClick={() => setSelectedDate(new Date(year, month, i))}
+                    style={{ position: "relative" }}
                 >
                     {i}
+
+                    {hasTodo && (
+                        <div
+                            style={{
+                                width: "6px",
+                                height: "6px",
+                                backgroundColor: "orange",
+                                borderRadius: "50%",
+                                position: "absolute",
+                                bottom: "-5px",
+                                left: "50%",
+                                transform: "translateX(-50%)",
+                            }}>
+                        </div>
+                    )}
                 </div>
             </div>
         );
