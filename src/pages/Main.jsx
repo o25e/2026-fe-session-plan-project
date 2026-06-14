@@ -5,6 +5,9 @@ function Main() {
     const [todos, setTodos] = useState([]);
     const [input, setInput] = useState("");
 
+    const [editingId, setEditingId] = useState(null);
+    const [editText, setEditText] = useState("");
+
     const addTodo = () => {
         if (!input.trim()) return;
 
@@ -35,6 +38,27 @@ function Main() {
 
     const deleteTodo = (id) => {
         setTodos(todos.filter((todo) => todo.id !== id));
+    };
+
+    const startEdit = (todo) => {
+        setEditingId(todo.id);
+        setEditText(todo.text);
+    }
+
+    const saveEdit = (id) => {
+        setTodos(
+            todos.map((todo) =>
+                todo.id === id
+                    ? {
+                        ...todo,
+                        text: editText,
+                    }
+                    : todo
+            )
+        );
+
+        setEditingId(null);
+        setEditText("");
     };
 
     return (
@@ -101,24 +125,50 @@ function Main() {
                                             className="h-5 w-5 cursor-pointer accent-orange-500"
                                         />
 
-                                        <span
-                                            className={
-                                                todo.completed
-                                                    ? "line-through text-gray-400"
-                                                    : ""
-                                            }
-                                        >
-                                            {todo.text}
-                                        </span>
+                                        {/* 수정 중이면 input 표시 */}
+                                        {editingId === todo.id ? (
+                                            <input
+                                                type="text"
+                                                value={editText}
+                                                onChange={(e) => setEditText(e.target.value)}
+                                                onBlur={() => saveEdit(todo.id)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === "Enter") {
+                                                        saveEdit(todo.id);
+                                                    }
+                                                }}
+                                                autoFocus
+                                                className="rounded-md border border-gray-300 px-2 py-1 outline-none focus:border-orange-500"
+                                            />
+                                        ) : (
+                                            <span
+                                                className={
+                                                    todo.completed
+                                                        ? "line-through text-gray-400"
+                                                        : ""
+                                                }
+                                            >
+                                                {todo.text}
+                                            </span>
+                                        )}
                                     </div>
 
-                                    {/* 오른쪽: 삭제 버튼 */}
-                                    <button
-                                        onClick={() => deleteTodo(todo.id)}
-                                        className="rounded-lg bg-white px-2 py-1 text-gray-600 hover:bg-gray-200"
-                                    >
-                                        ❌
-                                    </button>
+                                    {/* 오른쪽: 수정 + 삭제 버튼 */}
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => startEdit(todo)}
+                                            className="rounded-lg bg-white px-2 py-1 hover:bg-gray-200"
+                                        >
+                                            ✏️
+                                        </button>
+
+                                        <button
+                                            onClick={() => deleteTodo(todo.id)}
+                                            className="rounded-lg bg-white px-2 py-1 text-gray-600 hover:bg-gray-200"
+                                        >
+                                            ❌
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         ))}
