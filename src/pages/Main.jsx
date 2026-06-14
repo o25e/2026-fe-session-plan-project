@@ -12,6 +12,10 @@ function Main() {
 
     const formDate = (date) => date.toISOString().split("T")[0];
 
+    const formatTitleDate = (date) => {
+        return `${date.getMonth() + 1}월 ${date.getDate()}일`;
+    };
+
     const addTodo = () => {
         if (!input.trim()) return;
 
@@ -90,7 +94,7 @@ function Main() {
                 {/* 할 일 목록 */}
                 <div className="w-[450px] rounded-3xl bg-white p-6 shadow">
                     <h2 className="mb-6 text-center text-2xl font-bold">
-                        To Do List
+                        {formatTitleDate(selectedDate)}
                     </h2>
 
                     {/* 입력창 */}
