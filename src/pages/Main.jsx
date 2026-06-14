@@ -84,7 +84,16 @@ function Main() {
                                 key={todo.id}
                                 className="rounded-xl bg-orange-100 p-4"
                             >
-                                <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <input
+                                        type="checkbox"
+                                        checked={todo.completed}
+                                        onChange={() =>
+                                            toggleComplete(todo.id)
+                                        }
+                                        className="h-5 w-5 cursor-pointer accent-orange-500"
+                                    />
+
                                     <span
                                         className={
                                             todo.completed
@@ -94,15 +103,6 @@ function Main() {
                                     >
                                         {todo.text}
                                     </span>
-
-                                    <input
-                                        type="checkbox"
-                                        checked={todo.completed}
-                                        onChange={() =>
-                                            toggleComplete(todo.id)
-                                        }
-                                        className="h-5 w-5 cursor-pointer accent-orange-500"
-                                    />
                                 </div>
                             </div>
                         ))}
