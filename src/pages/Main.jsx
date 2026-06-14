@@ -33,6 +33,10 @@ function Main() {
         );
     };
 
+    const deleteTodo = (id) => {
+        setTodos(todos.filter((todo) => todo.id !== id));
+    };
+
     return (
         <div className="min-h-screen bg-gray-100">
             {/* 제목 */}
@@ -84,25 +88,37 @@ function Main() {
                                 key={todo.id}
                                 className="rounded-xl bg-orange-100 p-4"
                             >
-                                <div className="flex items-center gap-3">
-                                    <input
-                                        type="checkbox"
-                                        checked={todo.completed}
-                                        onChange={() =>
-                                            toggleComplete(todo.id)
-                                        }
-                                        className="h-5 w-5 cursor-pointer accent-orange-500"
-                                    />
+                                <div className="flex items-center justify-between">
 
-                                    <span
-                                        className={
-                                            todo.completed
-                                                ? "line-through text-gray-400"
-                                                : ""
-                                        }
+                                    {/* 왼쪽: 체크박스 */}
+                                    <div className="flex items-center gap-3">
+                                        <input
+                                            type="checkbox"
+                                            checked={todo.completed}
+                                            onChange={() =>
+                                                toggleComplete(todo.id)
+                                            }
+                                            className="h-5 w-5 cursor-pointer accent-orange-500"
+                                        />
+
+                                        <span
+                                            className={
+                                                todo.completed
+                                                    ? "line-through text-gray-400"
+                                                    : ""
+                                            }
+                                        >
+                                            {todo.text}
+                                        </span>
+                                    </div>
+
+                                    {/* 오른쪽: 삭제 버튼 */}
+                                    <button
+                                        onClick={() => deleteTodo(todo.id)}
+                                        className="rounded-lg bg-white px-2 py-1 text-gray-600 hover:bg-gray-200"
                                     >
-                                        {todo.text}
-                                    </span>
+                                        ❌
+                                    </button>
                                 </div>
                             </div>
                         ))}
