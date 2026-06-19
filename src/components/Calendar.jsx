@@ -69,12 +69,10 @@ function Calendar({selectedDate, setSelectedDate, todos}) {
                             ? "#f97316"
                             : "transparent",
 
-                        color: isToday ? "white" : "black",
+                        color: isToday ? "white" : undefined,
 
                         border: isSelected
-                            ? isToday
-                                ? "2px solid #575757"
-                                : "2px solid #575757"
+                            ? "2px solid #575757"
                             : isToday
                             ? "2px solid transparent"
                             : "none",
@@ -127,13 +125,13 @@ function Calendar({selectedDate, setSelectedDate, todos}) {
             </div>
 
             <div className="day">
-                <div>일</div>
+                <div className="red">일</div>
                 <div>월</div>
                 <div>화</div>
                 <div>수</div>
                 <div>목</div>
                 <div>금</div>
-                <div>토</div>
+                <div className="blue">토</div>
             </div>
 
             <div className="date">
