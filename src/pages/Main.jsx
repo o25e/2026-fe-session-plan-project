@@ -110,8 +110,23 @@ function Main() {
                                 </p>
                             </div>
 
-                            <div className="rounded-3xl bg-slate-100 px-4 py-2 text-sm text-slate-600">
-                                전체 {todaysTodos.length}개 · 완료 {completedCount}개
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-16 w-16 flex-col items-center justify-center rounded-full bg-orange-100 text-orange-600 shadow-sm">
+                                    <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-orange-700">
+                                        전체
+                                    </span>
+                                    <span className="text-xl font-bold">
+                                        {todaysTodos.length}
+                                    </span>
+                                </div>
+                                <div className="flex h-16 w-16 flex-col items-center justify-center rounded-full bg-slate-100 text-slate-700 shadow-sm">
+                                    <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">
+                                        완료
+                                    </span>
+                                    <span className="text-xl font-bold">
+                                        {completedCount}
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
