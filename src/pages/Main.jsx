@@ -75,6 +75,10 @@ function Main() {
 
     const todaysTodos = todos.filter((todo) => todo.date === formDate(selectedDate));
     const completedCount = todaysTodos.filter((todo) => todo.completed).length;
+    const sortedTodos = [...todaysTodos].sort((a, b) => {
+        if (a.completed === b.completed) return 0;
+        return a.completed ? 1 : -1;
+    });
 
     return (
         <div className="min-h-screen bg-[#f5f5f5] py-12">
@@ -156,7 +160,7 @@ function Main() {
                                     오늘 등록된 일정이 없습니다.
                                 </div>
                             ) : (
-                                todaysTodos.map((todo) => (
+                                sortedTodos.map((todo) => (
                                     <div
                                         key={todo.id}
                                         className="rounded-3xl border border-slate-200 bg-orange-50 p-4 shadow-sm"
