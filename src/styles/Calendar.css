@@ -88,13 +88,13 @@
 }
 
 .date > div.has-todo {
-    background: linear-gradient(135deg, #fef3c7 0%, #fef08a 100%);
-    border-color: #fcd34d;
+    background: linear-gradient(135deg, #e6fffb 0%, #c6f7e6 100%); /* 연초록 그라데이션 */
+    border-color: #6ee7b7; /* 연초록 테두리 */
     font-weight: 600;
 }
 
 .date > div.has-todo:hover {
-    background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%);
+    background: linear-gradient(135deg, #d1fae5 0%, #9ee9c8 100%);
 }
 
 .red {

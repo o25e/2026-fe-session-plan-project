@@ -50,7 +50,7 @@ function Calendar({selectedDate, setSelectedDate, todos}) {
         const hasTodo = todos.some((todo) => todo.date === dateStr);
 
         days.push(
-            <div key={i} className={className}>
+            <div key={i} className={`${className} ${hasTodo ? 'has-todo' : ''}`}>
                 <div
                     onClick={() => setSelectedDate(new Date(year, month, i))}
                     style={{
@@ -79,21 +79,6 @@ function Calendar({selectedDate, setSelectedDate, todos}) {
                     }}
                 >
                     {i}
-
-                    {hasTodo && (
-                        <div
-                            style={{
-                                width: "6px",
-                                height: "6px",
-                                backgroundColor: "orange",
-                                borderRadius: "50%",
-                                position: "absolute",
-                                bottom: "-5px",
-                                left: "50%",
-                                transform: "translateX(-50%)",
-                            }}>
-                        </div>
-                    )}
                 </div>
             </div>
         );
