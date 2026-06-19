@@ -73,123 +73,136 @@ function Main() {
         setEditText("");
     };
 
+    const todaysTodos = todos.filter((todo) => todo.date === formDate(selectedDate));
+    const completedCount = todaysTodos.filter((todo) => todo.completed).length;
+
     return (
-        <div className="min-h-screen bg-gray-100">
-            {/* 제목 */}
-            <div className="pt-12 text-center">
-                <h1 className="text-4xl font-bold text-orange-500">
-                    To Do
-                </h1>
-
-                <p className="mt-2 text-sm text-gray-500">
-                    나만의 일정 관리 서비스
-                </p>
-            </div>
-
-            {/* 달력 + 할 일 목록 */}
-            <div className="mt-10 flex justify-center gap-8 px-4 pb-10">
-                {/* 달력 */}
-                <div className="rounded-3xl bg-white p-6 shadow">
-                    <Calendar
-                        selectedDate={selectedDate}
-                        setSelectedDate={setSelectedDate}
-                        todos={todos}
-                    />
+        <div className="min-h-screen bg-[#f5f5f5] py-12">
+            <div className="mx-auto max-w-6xl px-4">
+                {/* 제목 */}
+                <div className="mb-10 text-center">
+                    <h1 className="mt-4 text-5xl font-extrabold text-orange-500">
+                        To Do
+                    </h1>
+                    <p className="mt-3 text-base text-slate-500">
+                        나만의 일정 관리 서비스
+                    </p>
                 </div>
 
-                {/* 할 일 목록 */}
-                <div className="w-[450px] rounded-3xl bg-white p-6 shadow">
-                    <h2 className="mb-6 text-center text-2xl font-bold">
-                        {formatTitleDate(selectedDate)}
-                    </h2>
-
-                    {/* 입력창 */}
-                    <div className="mb-5 flex gap-2">
-                        <input
-                            type="text"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            placeholder="할 일을 입력하세요"
-                            className="flex-1 rounded-xl border border-gray-300 p-3 outline-none focus:border-orange-500"
+                {/* 달력 + 할 일 목록 */}
+                <div className="grid gap-8 lg:grid-cols-[380px_1fr]">
+                    <div className="rounded-[32px] bg-white p-6 shadow-md">
+                        <Calendar
+                            selectedDate={selectedDate}
+                            setSelectedDate={setSelectedDate}
+                            todos={todos}
                         />
-
-                        <button
-                            onClick={addTodo}
-                            className="rounded-xl bg-orange-500 px-5 font-semibold text-white hover:bg-orange-600"
-                        >
-                            추가
-                        </button>
                     </div>
 
-                    {/* 할 일 목록 */}
-                    <div className="space-y-3">
-                        {todos
-                            .filter((todo) => todo.date === formDate(selectedDate))
-                            .map((todo) => (
-                            <div
-                                key={todo.id}
-                                className="rounded-xl bg-orange-100 p-4"
-                            >
-                                <div className="flex items-center justify-between">
-
-                                    {/* 왼쪽: 체크박스 */}
-                                    <div className="flex items-center gap-3">
-                                        <input
-                                            type="checkbox"
-                                            checked={todo.completed}
-                                            onChange={() =>
-                                                toggleComplete(todo.id)
-                                            }
-                                            className="h-5 w-5 cursor-pointer accent-orange-500"
-                                        />
-
-                                        {/* 수정 중이면 input 표시 */}
-                                        {editingId === todo.id ? (
-                                            <input
-                                                type="text"
-                                                value={editText}
-                                                onChange={(e) => setEditText(e.target.value)}
-                                                onBlur={() => saveEdit(todo.id)}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === "Enter") {
-                                                        saveEdit(todo.id);
-                                                    }
-                                                }}
-                                                autoFocus
-                                                className="rounded-md border border-gray-300 px-2 py-1 outline-none focus:border-orange-500"
-                                            />
-                                        ) : (
-                                            <span
-                                                className={
-                                                    todo.completed
-                                                        ? "line-through text-gray-400"
-                                                        : ""
-                                                }
-                                            >
-                                                {todo.text}
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    {/* 오른쪽: 수정 + 삭제 버튼 */}
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => startEdit(todo)}
-                                            className="rounded-lg bg-white px-2 py-1 hover:bg-gray-200"
-                                        >
-                                            ✏️
-                                        </button>
-
-                                        <button
-                                            onClick={() => deleteTodo(todo.id)}
-                                            className="rounded-lg bg-white px-2 py-1 text-gray-600 hover:bg-gray-200"
-                                        >
-                                            ❌
-                                        </button>
-                                    </div>
-                                </div>
+                    <div className="rounded-[32px] bg-white p-8 shadow-md">
+                        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                            <div>
+                                <h2 className="text-3xl font-bold text-slate-900 text-left">
+                                    {formatTitleDate(selectedDate)}
+                                </h2>
+                                <p className="mt-2 text-sm text-slate-500 text-left">
+                                    선택한 날짜의 할 일 목록입니다.
+                                </p>
                             </div>
-                        ))}
+
+                            <div className="rounded-3xl bg-slate-100 px-4 py-2 text-sm text-slate-600">
+                                전체 {todaysTodos.length}개 · 완료 {completedCount}개
+                            </div>
+                        </div>
+
+                        {/* 입력창 */}
+                        <div className="mb-6 flex flex-col gap-3 sm:flex-row">
+                            <input
+                                type="text"
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                placeholder="할 일을 입력하세요"
+                                className="flex-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none shadow-sm transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                            />
+
+                            <button
+                                onClick={addTodo}
+                                className="inline-flex items-center justify-center rounded-2xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+                                disabled={!input.trim()}
+                            >
+                                추가
+                            </button>
+                        </div>
+
+                        {/* 할 일 목록 */}
+                        <div className="space-y-4">
+                            {todaysTodos.length === 0 ? (
+                                <div className="rounded-3xl border border-dashed border-slate-200 bg-orange-50 px-6 py-10 text-center text-slate-500">
+                                    오늘 등록된 일정이 없습니다.
+                                </div>
+                            ) : (
+                                todaysTodos.map((todo) => (
+                                    <div
+                                        key={todo.id}
+                                        className="rounded-3xl border border-slate-200 bg-orange-50 p-4 shadow-sm"
+                                    >
+                                        <div className="flex items-center justify-between gap-4">
+                                            <div className="flex items-center gap-3">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={todo.completed}
+                                                    onChange={() =>
+                                                        toggleComplete(todo.id)
+                                                    }
+                                                />
+
+                                                {editingId === todo.id ? (
+                                                    <input
+                                                        type="text"
+                                                        value={editText}
+                                                        onChange={(e) => setEditText(e.target.value)}
+                                                        onBlur={() => saveEdit(todo.id)}
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === "Enter") {
+                                                                saveEdit(todo.id);
+                                                            }
+                                                        }}
+                                                        autoFocus
+                                                        className="w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-slate-900 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                                                    />
+                                                ) : (
+                                                    <span
+                                                        className={`text-sm ${
+                                                            todo.completed
+                                                                ? "line-through text-slate-400"
+                                                                : "text-slate-900"
+                                                        }`}
+                                                    >
+                                                        {todo.text}
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => startEdit(todo)}
+                                                    className="rounded-2xl bg-white px-3 py-2 text-sm text-slate-500 transition hover:bg-slate-100"
+                                                >
+                                                    수정
+                                                </button>
+
+                                                <button
+                                                    onClick={() => deleteTodo(todo.id)}
+                                                    className="rounded-2xl bg-white px-3 py-2 text-sm text-slate-500 transition hover:bg-slate-100"
+                                                >
+                                                    삭제
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
