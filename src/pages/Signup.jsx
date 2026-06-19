@@ -1,7 +1,29 @@
-import {useNavigate} from 'react-router';
+import { useState } from "react";
+import { useNavigate } from "react-router";
 
 function Signup() {
     const navigate = useNavigate();
+    const [id, setId] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleSignup = () => {
+        if (!id.trim() || !password.trim()) {
+            alert("아이디와 비밀번호를 입력해주세요.");
+            return;
+        }
+
+        localStorage.setItem(
+            "plan-project-user",
+            JSON.stringify({
+                id,
+                password,
+            })
+        );
+
+        alert("회원가입이 완료되었습니다.");
+        navigate("/");
+    };
+
     return (
         <div className="min-h-screen flex flex-col justify-center bg-gray-100">
             {/* 제목 */}
@@ -27,6 +49,8 @@ function Signup() {
 
                     <input
                     type="text"
+                    value={id}
+                    onChange={(e) => setId(e.target.value)}
                     placeholder="ID"
                     className="w-full rounded-xl border border-gray-300 p-3 outline-none transition focus:border-orange-500"
                     />
@@ -40,6 +64,8 @@ function Signup() {
 
                     <input
                     type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password"
                     className="w-full rounded-xl border border-gray-300 p-3 outline-none transition focus:border-orange-500"
                     />
@@ -48,7 +74,7 @@ function Signup() {
 
                 {/* 버튼 */}
                 <button
-                    onClick={() => navigate("/")}
+                    onClick={handleSignup}
                     className="mt-8 w-full rounded-xl bg-orange-500 p-3 font-semibold text-white transition hover:bg-orange-600"
                 >
                 회원가입

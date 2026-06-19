@@ -1,6 +1,27 @@
-import { Link } from "react-router";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router";
 
 function Login() {
+    const navigate = useNavigate();
+    const [id, setId] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleLogin = () => {
+        const savedUser = JSON.parse(localStorage.getItem("plan-project-user"));
+
+        if (!savedUser) {
+            alert("가입된 회원 정보가 없습니다. 회원가입을 먼저 해주세요.");
+            return;
+        }
+
+        if (savedUser.id === id && savedUser.password === password) {
+            navigate("/main");
+            return;
+        }
+
+        alert("아이디 또는 비밀번호가 일치하지 않습니다.");
+    };
+
     return (
         <div className="min-h-screen flex flex-col justify-center bg-gray-100">
             {/* 제목 */}
@@ -26,6 +47,8 @@ function Login() {
 
                     <input
                     type="text"
+                    value={id}
+                    onChange={(e) => setId(e.target.value)}
                     placeholder="ID"
                     className="w-full rounded-xl border border-gray-300 p-3 outline-none transition focus:border-orange-500"
                     />
@@ -39,6 +62,8 @@ function Login() {
 
                     <input
                     type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password"
                     className="w-full rounded-xl border border-gray-300 p-3 outline-none transition focus:border-orange-500"
                     />
@@ -47,6 +72,7 @@ function Login() {
 
                 {/* 버튼 */}
                 <button
+                onClick={handleLogin}
                 className="mt-8 w-full rounded-xl bg-orange-500 p-3 font-semibold text-white transition hover:bg-orange-600"
                 >
                 로그인
