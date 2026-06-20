@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Calendar from "../components/Calendar";
-import { getTodos, createTodo } from "../api/todoApi";
+import { getTodos, createTodo, updateTodo } from "../api/todoApi";
 
 function Main() {
     const [todos, setTodos] = useState([]);
@@ -89,20 +89,24 @@ function Main() {
         setEditText(todo.text);
     }
 
-    const saveEdit = (id) => {
-        setTodos(
-            todos.map((todo) =>
-                todo.id === id
-                    ? {
-                        ...todo,
-                        text: editText,
-                    }
-                    : todo
-            )
-        );
+    const saveEdit = async (id) => {
+        try {
+            const memberId = localStorage.getItem("memberId");
 
-        setEditingId(null);
-        setEditText("");
+            await updateTodo(
+                memberId,
+                id,
+                selectedDate.toISOString(),
+                editText
+            );
+
+            await loadTodos();
+
+            setEditingId(null);
+            setEditText("");
+        } catch (error) {
+            alert(error.message);
+        }
     };
 
     const todaysTodos = todos.filter((todo) => todo.date === formDate(selectedDate));
