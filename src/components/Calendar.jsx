@@ -72,7 +72,7 @@ function Calendar({selectedDate, setSelectedDate, todos}) {
                         color: isToday ? "white" : undefined,
 
                         border: isSelected
-                            ? "2px solid #575757"
+                            ? "2px solid #706E6D"
                             : isToday
                             ? "2px solid transparent"
                             : "none",
