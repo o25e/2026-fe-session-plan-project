@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Calendar from "../components/Calendar";
-import { getTodos, createTodo, updateTodo } from "../api/todoApi";
+import { getTodos, createTodo, updateTodo, removeTodo } from "../api/todoApi";
 
 function Main() {
     const [todos, setTodos] = useState([]);
@@ -80,8 +80,16 @@ function Main() {
         );
     };
 
-    const deleteTodo = (id) => {
-        setTodos(todos.filter((todo) => todo.id !== id));
+    const deleteTodo = async (id) => {
+        try {
+            const memberId = localStorage.getItem("memberId");
+
+            await removeTodo(memberId, id);
+
+            await loadTodos();
+        } catch (error) {
+            alert(error.message);
+        }
     };
 
     const startEdit = (todo) => {

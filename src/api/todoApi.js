@@ -56,3 +56,15 @@ export async function updateTodo(memberId, todoId, date, content) {
 
     return data;
 }
+
+// todo 삭제
+export async function removeTodo(memberId, todoId) {
+    const response = await fetch(`${BASE_URL}/api/members/${memberId}/todos/${todoId}`, {
+        method: "DELETE",
+    });
+
+    if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message);
+    }
+}
