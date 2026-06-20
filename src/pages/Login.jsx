@@ -1,27 +1,29 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
+import { login } from "../api/memberApi";
 
 function Login() {
     const navigate = useNavigate();
-    const [id, setId] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleLogin = () => {
-        const savedUser = JSON.parse(localStorage.getItem("plan-project-user"));
-
-        if (!savedUser) {
-            alert("가입된 회원 정보가 없습니다. 회원가입을 먼저 해주세요.");
+    const handleLogin = async () => {
+        if (!username.trim() || !password.trim()) {
+            alert("아이디와 비밀번호를 입력해주세요.");
             return;
         }
 
-        if (savedUser.id === id && savedUser.password === password) {
+        try {
+            const data = await login(username, password);
+            localStorage.setItem("memberId", data.member_id)
+
+            alert("로그인 성공!");
             navigate("/main");
-            return;
+        } catch (error) {
+            alert(error.message);
         }
-
-        alert("아이디 또는 비밀번호가 일치하지 않습니다.");
     };
-
+    
     return (
         <div className="min-h-screen flex flex-col justify-center bg-gray-100">
             {/* 제목 */}
@@ -47,8 +49,8 @@ function Login() {
 
                     <input
                     type="text"
-                    value={id}
-                    onChange={(e) => setId(e.target.value)}
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     placeholder="ID"
                     className="w-full rounded-xl border border-gray-300 p-3 outline-none transition focus:border-orange-500"
                     />
