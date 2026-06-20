@@ -1,27 +1,26 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { signup } from "../api/memberApi";
 
 function Signup() {
     const navigate = useNavigate();
-    const [id, setId] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleSignup = () => {
-        if (!id.trim() || !password.trim()) {
+    const handleSignup = async () => {
+        if (!username.trim() || !password.trim()) {
             alert("아이디와 비밀번호를 입력해주세요.");
             return;
         }
 
-        localStorage.setItem(
-            "plan-project-user",
-            JSON.stringify({
-                id,
-                password,
-            })
-        );
-
-        alert("회원가입이 완료되었습니다.");
-        navigate("/");
+        try {
+            await signup(username, password);
+            
+            alert("회원가입이 완료되었습니다.");
+            navigate("/");
+        } catch (error) {
+            alert(error.message);
+        }
     };
 
     return (
@@ -49,8 +48,8 @@ function Signup() {
 
                     <input
                     type="text"
-                    value={id}
-                    onChange={(e) => setId(e.target.value)}
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     placeholder="ID"
                     className="w-full rounded-xl border border-gray-300 p-3 outline-none transition focus:border-orange-500"
                     />

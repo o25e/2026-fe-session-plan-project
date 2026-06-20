@@ -95,7 +95,7 @@ function Main() {
 
                 {/* 달력 + 할 일 목록 */}
                 <div className="grid gap-8 lg:grid-cols-[380px_1fr]">
-                    <div className="rounded-[32px] bg-white p-6 shadow-md">
+                    <div className="rounded-4xl bg-white p-6 shadow-md">
                         <Calendar
                             selectedDate={selectedDate}
                             setSelectedDate={setSelectedDate}
@@ -103,7 +103,7 @@ function Main() {
                         />
                     </div>
 
-                    <div className="rounded-[32px] bg-white p-8 shadow-md">
+                    <div className="rounded-4xl bg-white p-8 shadow-md">
                         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                             <div>
                                 <h2 className="text-3xl font-bold text-slate-900 text-left">
