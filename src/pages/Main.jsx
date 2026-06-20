@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Calendar from "../components/Calendar";
-import { getTodos } from "../api/todoApi";
+import { getTodos, createTodo } from "../api/todoApi";
 
 function Main() {
     const [todos, setTodos] = useState([]);
@@ -48,18 +48,24 @@ function Main() {
         loadTodos();
     }, []);
 
-    const addTodo = () => {
+    const addTodo = async () => {
         if (!input.trim()) return;
 
-        setTodos([
-            ...todos,
-            {
-                id: Date.now(),
-                text: input,
-                completed: false,
-                date: formDate(selectedDate),
-            },
-        ]);
+        try {
+            const memberId = localStorage.getItem("memberId");
+
+            await createTodo(
+                memberId,
+                selectedDate.toISOString(),
+                input
+            );
+
+            await loadTodos();
+
+            setInput("");
+        } catch (error) {
+            alert(error.message);
+        }
 
         setInput("");
     };
