@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Calendar from "../components/Calendar";
+import { getTodos } from "../api/todoApi";
 
 function Main() {
     const [todos, setTodos] = useState([]);
@@ -21,6 +22,31 @@ function Main() {
     const formatTitleDate = (date) => {
         return `${date.getMonth() + 1}월 ${date.getDate()}일`;
     };
+
+    const loadTodos = async () => {
+        try{
+            const memberId = localStorage.getItem("memberId");
+
+            const data = await getTodos(memberId);
+
+            const formattedTodos = data.map((todo) => ({
+                id: todo.todo_id,
+                text: todo.content,
+                completed: todo.is_checked,
+                date: todo.date.split("T")[0], // 2025-06-17T18:30:00 -> 2024-06-17 로 변환하여 저장
+            }));
+
+            console.log(data);
+
+            setTodos(formattedTodos);
+        } catch (error) {
+            alert(error.message);
+        }
+    };
+
+    useEffect(() => {
+        loadTodos();
+    }, []);
 
     const addTodo = () => {
         if (!input.trim()) return;
