@@ -24,6 +24,8 @@ function Main() {
         return `${year}-${month}-${day}`;
     };
 
+    const formatDateTime = (date) => `${formDate(date)}T00:00:00`;
+
     const formatTitleDate = (date) => {
         return `${date.getMonth() + 1}월 ${date.getDate()}일`;
     };
@@ -74,7 +76,7 @@ function Main() {
 
             await createTodo(
                 memberId,
-                selectedDate.toISOString(),
+                formatDateTime(selectedDate),
                 input
             );
 
@@ -122,7 +124,7 @@ function Main() {
             await updateTodo(
                 memberId,
                 id,
-                selectedDate.toISOString(),
+                formatDateTime(selectedDate),
                 editText
             );
 
@@ -173,7 +175,7 @@ function Main() {
                         To Do
                     </h1>
                     <p className="mt-3 text-base text-slate-500">
-                        ~오늘의 계획~ <br></br>일단 시작하기
+                        ~오늘의 계획~<br></br>일단 시작하기
                     </p>
                 </div>
 
@@ -194,7 +196,7 @@ function Main() {
                                     {formatTitleDate(selectedDate)}
                                 </h2>
                                 <p className="mt-2 text-sm text-slate-500 text-left">
-                                    🔥 🔥 🔥 🔥 🔥
+                                    선택한 날짜의 할 일 목록입니다.
                                 </p>
                             </div>
 
@@ -297,21 +299,21 @@ function Main() {
                                                     className="rounded-2xl bg-white px-3 py-2 text-sm transition text-green-500
                                                             hover:bg-green-50 hover:text-green-600"
                                                 >
-                                                    리뷰
+                                                    🐸
                                                 </button>
                                                 <button
                                                 onClick={() => startEdit(todo)}
                                                 className="rounded-2xl bg-white px-3 py-2 text-sm transition text-blue-500
                                                             hover:bg-blue-50 hover:text-blue-600"
                                                 >
-                                                수정
+                                                ✏️
                                                 </button>
                                                 <button
                                                 onClick={() => deleteTodo(todo.id)}
                                                 className="rounded-2xl bg-white px-3 py-2 text-sm transition text-red-500
                                                             hover:bg-red-50 hover:text-red-600"
                                                 >
-                                                삭제
+                                                ❌
                                                 </button>
                                             </div>
 
