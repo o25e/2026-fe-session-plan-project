@@ -83,3 +83,24 @@ export async function checkTodo(memberId, todoId) {
 
     return data;
 }
+
+// todo 리뷰
+export async function reviewTodo(memberId, todoId, emoji) {
+    const response = await fetch(`${BASE_URL}/api/members/${memberId}/todos/${todoId}/reviews`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            emoji,
+        }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message);
+    }
+
+    return data;
+}

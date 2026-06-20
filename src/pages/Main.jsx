@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Calendar from "../components/Calendar";
-import { getTodos, createTodo, updateTodo, removeTodo, checkTodo } from "../api/todoApi";
+import { getTodos, createTodo, updateTodo, removeTodo, checkTodo, reviewTodo } from "../api/todoApi";
 
 function Main() {
     const [todos, setTodos] = useState([]);
@@ -10,6 +10,10 @@ function Main() {
 
     const [editingId, setEditingId] = useState(null);
     const [editText, setEditText] = useState("");
+
+    const [reviewTodoId, setReviewTodoId] = useState(null);
+    const reviewPickerRef = useRef(null); // 외부 클릭 감지용 (리뷰 이모지 영역)
+    const emojiList = ["❤️", "👍", "🔥", "✅", "😍", "😢", "😋", "🤮", "👽", "💩"];
 
     // Date → YYYY-MM-DD (프론트 비교용 포맷)
     const formDate = (date) => {
@@ -34,6 +38,7 @@ function Main() {
                 id: todo.todo_id,
                 text: todo.content,
                 completed: todo.is_checked,
+                emoji: todo.emoji ?? todo.review ?? todo.review_emoji ?? todo.reviewEmoji ?? "",
                 date: todo.date.split("T")[0], // ISO → YYYY-MM-DD (날짜 필터링용)
             }));
 
@@ -46,6 +51,19 @@ function Main() {
     useEffect(() => {
         loadTodos();
     }, []);
+
+    // 리뷰 창이 열려 있을 때만 외부 클릭 시 자동 닫힘
+    useEffect(() => {
+        if (!reviewTodoId) return;
+
+        const closeReviewPicker = (event) => {
+            if (reviewPickerRef.current?.contains(event.target)) return;
+            setReviewTodoId(null);
+        };
+
+        document.addEventListener("mousedown", closeReviewPicker);
+        return () => document.removeEventListener("mousedown", closeReviewPicker);
+    }, [reviewTodoId]);
 
     // 선택 날짜 기준으로 todo 생성
     const addTodo = async () => {
@@ -116,6 +134,25 @@ function Main() {
             alert(error.message);
         }
     };
+
+    // todo에 이모지 리뷰 저장 후 UI 즉시 반영
+    const reviewTodoHandler = async (id, emoji) => {
+    try {
+        const memberId = localStorage.getItem("memberId");
+
+        await reviewTodo(memberId, id, emoji);
+
+        setTodos((prevTodos) =>
+            prevTodos.map((todo) =>
+                todo.id === id ? { ...todo, emoji } : todo
+            )
+        );
+
+        setReviewTodoId(null); // UI 닫기
+    } catch (error) {
+        alert(error.message);
+    }
+};
 
     // 선택된 날짜 기준 필터링
     const todaysTodos = todos.filter((todo) => todo.date === formDate(selectedDate));
@@ -208,11 +245,9 @@ function Main() {
                                 </div>
                             ) : (
                                 sortedTodos.map((todo) => (
-                                    <div
-                                        key={todo.id}
-                                        className="rounded-3xl border border-slate-200 bg-orange-50 p-4 shadow-sm"
-                                    >
-                                        <div className="flex items-center justify-between gap-4">
+                                    <div key={todo.id}>
+                                        <div className="rounded-3xl border border-slate-200 bg-orange-50 p-4 shadow-sm">
+                                            <div className="flex items-center justify-between gap-4">
                                             <div className="flex items-center gap-3">
                                                 <input
                                                     type="checkbox"
@@ -237,19 +272,33 @@ function Main() {
                                                         className="w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-slate-900 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
                                                     />
                                                 ) : (
-                                                    <span
-                                                        className={`text-sm ${
-                                                            todo.completed
-                                                                ? "line-through text-slate-400"
-                                                                : "text-slate-900"
-                                                        }`}
-                                                    >
-                                                        {todo.text}
-                                                    </span>
+                                                    <div className="flex items-center gap-2">
+                                                        <span
+                                                            className={`text-sm ${
+                                                                todo.completed
+                                                                    ? "line-through text-slate-400"
+                                                                    : "text-slate-900"
+                                                            }`}
+                                                        >
+                                                            {todo.text}
+                                                        </span>
+                                                        {todo.emoji && (
+                                                            <span className="text-base leading-none">
+                                                                {todo.emoji}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 )}
                                             </div>
 
                                             <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => setReviewTodoId((currentId) => currentId === todo.id ? null : todo.id)}
+                                                    className="rounded-2xl bg-white px-3 py-2 text-sm transition text-green-500
+                                                            hover:bg-green-50 hover:text-green-600"
+                                                >
+                                                    리뷰
+                                                </button>
                                                 <button
                                                 onClick={() => startEdit(todo)}
                                                 className="rounded-2xl bg-white px-3 py-2 text-sm transition text-blue-500
@@ -265,7 +314,27 @@ function Main() {
                                                 삭제
                                                 </button>
                                             </div>
+
+                                            </div>
                                         </div>
+
+                                        {/* 현재 선택한 todo에만 리뷰 이모지 패널 표시, ref로 외부 클릭 감지 대상 지정 */}
+                                        {reviewTodoId === todo.id && (
+                                            <div
+                                                ref={reviewPickerRef}
+                                                className="mt-2 flex justify-end gap-1.5"
+                                            >
+                                                {emojiList.map((emoji) => (
+                                                    <button
+                                                        key={emoji}
+                                                        onClick={() => reviewTodoHandler(todo.id, emoji)}
+                                                        className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-base transition hover:bg-green-100"
+                                                    >
+                                                        {emoji}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 ))
                             )}
