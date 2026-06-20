@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Calendar from "../components/Calendar";
-import { getTodos, createTodo, updateTodo, removeTodo } from "../api/todoApi";
+import { getTodos, createTodo, updateTodo, removeTodo, checkTodo } from "../api/todoApi";
 
 function Main() {
     const [todos, setTodos] = useState([]);
@@ -70,14 +70,16 @@ function Main() {
         setInput("");
     };
 
-    const toggleComplete = (id) => {
-        setTodos(
-            todos.map((todo) =>
-                todo.id === id
-                    ? { ...todo, completed: !todo.completed }
-                    : todo
-            )
-        );
+    const toggleComplete = async (id) => {
+        try {
+            const memberId = localStorage.getItem("memberId");
+
+            await checkTodo(memberId, id);
+
+            await loadTodos();
+        } catch (error) {
+            alert(error.message);
+        }
     };
 
     const deleteTodo = async (id) => {

@@ -68,3 +68,18 @@ export async function removeTodo(memberId, todoId) {
         throw new Error(data.message);
     }
 }
+
+// todo 완료
+export async function checkTodo(memberId, todoId) {
+    const response = await fetch(`${BASE_URL}/api/members/${memberId}/todos/${todoId}/check`, {
+        method: "PATCH",
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message);
+    }
+
+    return data;
+}
