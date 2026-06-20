@@ -11,6 +11,7 @@ function Main() {
     const [editingId, setEditingId] = useState(null);
     const [editText, setEditText] = useState("");
 
+    // Date → YYYY-MM-DD (프론트 비교용 포맷)
     const formDate = (date) => {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -23,20 +24,18 @@ function Main() {
         return `${date.getMonth() + 1}월 ${date.getDate()}일`;
     };
 
+    // 서버에서 todo 전체 조회 후 프론트에서 사용 가능한 형태로 변환
     const loadTodos = async () => {
         try{
             const memberId = localStorage.getItem("memberId");
-
             const data = await getTodos(memberId);
 
             const formattedTodos = data.map((todo) => ({
                 id: todo.todo_id,
                 text: todo.content,
                 completed: todo.is_checked,
-                date: todo.date.split("T")[0], // 2025-06-17T18:30:00 -> 2024-06-17 로 변환하여 저장
+                date: todo.date.split("T")[0], // ISO → YYYY-MM-DD (날짜 필터링용)
             }));
-
-            console.log(data);
 
             setTodos(formattedTodos);
         } catch (error) {
@@ -48,6 +47,7 @@ function Main() {
         loadTodos();
     }, []);
 
+    // 선택 날짜 기준으로 todo 생성
     const addTodo = async () => {
         if (!input.trim()) return;
 
@@ -61,33 +61,30 @@ function Main() {
             );
 
             await loadTodos();
-
             setInput("");
         } catch (error) {
             alert(error.message);
         }
-
-        setInput("");
     };
 
+    // 완료 상태 토글 (서버 상태 변경 후 전체 동기화)
     const toggleComplete = async (id) => {
         try {
             const memberId = localStorage.getItem("memberId");
 
             await checkTodo(memberId, id);
-
             await loadTodos();
         } catch (error) {
             alert(error.message);
         }
     };
 
+    // todo 삭제 후 목록 갱신
     const deleteTodo = async (id) => {
         try {
             const memberId = localStorage.getItem("memberId");
 
             await removeTodo(memberId, id);
-
             await loadTodos();
         } catch (error) {
             alert(error.message);
@@ -99,6 +96,7 @@ function Main() {
         setEditText(todo.text);
     }
 
+    // 수정 완료 후 서버 반영 + 목록 동기화
     const saveEdit = async (id) => {
         try {
             const memberId = localStorage.getItem("memberId");
@@ -119,8 +117,11 @@ function Main() {
         }
     };
 
+    // 선택된 날짜 기준 필터링
     const todaysTodos = todos.filter((todo) => todo.date === formDate(selectedDate));
     const completedCount = todaysTodos.filter((todo) => todo.completed).length;
+
+    // 완료된 항목을 아래로 정렬
     const sortedTodos = [...todaysTodos].sort((a, b) => {
         if (a.completed === b.completed) return 0;
         return a.completed ? 1 : -1;
@@ -129,7 +130,7 @@ function Main() {
     return (
         <div className="min-h-screen bg-[#f5f5f5] py-12">
             <div className="mx-auto max-w-6xl px-4">
-                {/* 제목 */}
+                {/* 헤더 */}
                 <div className="mb-10 text-center">
                     <h1 className="mt-4 text-5xl font-extrabold text-orange-500">
                         To Do
