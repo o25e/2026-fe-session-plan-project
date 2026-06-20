@@ -136,7 +136,7 @@ function Main() {
                         To Do
                     </h1>
                     <p className="mt-3 text-base text-slate-500">
-                        나만의 일정 관리 서비스
+                        ~오늘의 계획~ <br></br>일단 시작하기
                     </p>
                 </div>
 
@@ -157,7 +157,7 @@ function Main() {
                                     {formatTitleDate(selectedDate)}
                                 </h2>
                                 <p className="mt-2 text-sm text-slate-500 text-left">
-                                    선택한 날짜의 할 일 목록입니다.
+                                    🔥 🔥 🔥 🔥 🔥
                                 </p>
                             </div>
 
@@ -251,17 +251,18 @@ function Main() {
 
                                             <div className="flex gap-2">
                                                 <button
-                                                    onClick={() => startEdit(todo)}
-                                                    className="rounded-2xl bg-white px-3 py-2 text-sm text-slate-500 transition hover:bg-slate-100"
+                                                onClick={() => startEdit(todo)}
+                                                className="rounded-2xl bg-white px-3 py-2 text-sm transition text-blue-500
+                                                            hover:bg-blue-50 hover:text-blue-600"
                                                 >
-                                                    수정
+                                                수정
                                                 </button>
-
                                                 <button
-                                                    onClick={() => deleteTodo(todo.id)}
-                                                    className="rounded-2xl bg-white px-3 py-2 text-sm text-slate-500 transition hover:bg-slate-100"
+                                                onClick={() => deleteTodo(todo.id)}
+                                                className="rounded-2xl bg-white px-3 py-2 text-sm transition text-red-500
+                                                            hover:bg-red-50 hover:text-red-600"
                                                 >
-                                                    삭제
+                                                삭제
                                                 </button>
                                             </div>
                                         </div>
