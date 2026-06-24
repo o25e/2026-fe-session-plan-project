@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import Calendar from "../components/Calendar";
 import { getTodos, createTodo, updateTodo, removeTodo, checkTodo, reviewTodo } from "../api/todoApi";
 
 function Main() {
+    const navigate = useNavigate();
     const [todos, setTodos] = useState([]);
     const [input, setInput] = useState("");
+    const [username] = useState(() => localStorage.getItem("username"));
 
     const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -34,6 +37,7 @@ function Main() {
     const loadTodos = async () => {
         try{
             const memberId = localStorage.getItem("memberId");
+            if (!memberId) return;
             const data = await getTodos(memberId);
 
             const formattedTodos = data.map((todo) => ({
@@ -51,8 +55,13 @@ function Main() {
     };
 
     useEffect(() => {
+        if (!username) {
+            navigate("/");
+            return;
+        }
+
         loadTodos();
-    }, []);
+    }, [username, navigate]);
 
     // 리뷰 창이 열려 있을 때만 외부 클릭 시 자동 닫힘
     useEffect(() => {
@@ -166,9 +175,27 @@ function Main() {
         return a.completed ? 1 : -1;
     });
 
+    const handleLogout = () => {
+        localStorage.removeItem("memberId");
+        localStorage.removeItem("username");
+        navigate("/");
+    };
+
     return (
         <div className="min-h-screen bg-[#f5f5f5] py-12">
             <div className="mx-auto max-w-6xl px-4">
+                <div className="mb-6 flex items-center justify-start gap-2">
+                    <div className="rounded-lg bg-white/70 px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm">
+                        <span className="text-orange-500">{username}</span>님
+                    </div>
+                    <button
+                        onClick={handleLogout}
+                        className="rounded-lg bg-gray-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-600"
+                    >
+                        로그아웃
+                    </button>
+                </div>
+
                 {/* 헤더 */}
                 <div className="mb-10 text-center">
                     <h1 className="mt-4 text-5xl font-extrabold text-orange-500">

@@ -16,6 +16,7 @@ function Login() {
         try {
             const data = await login(username, password);
             localStorage.setItem("memberId", data.member_id)
+            localStorage.setItem("username", username);
 
             alert("로그인 성공!");
             navigate("/main");
