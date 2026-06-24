@@ -1,4 +1,5 @@
-const BASE_URL = "http://ec2-43-201-28-82.ap-northeast-2.compute.amazonaws.com";
+// const BASE_URL = "http://ec2-43-201-28-82.ap-northeast-2.compute.amazonaws.com";
+const BASE_URL = "http://ec2-13-238-218-82.ap-southeast-2.compute.amazonaws.com:8080";
 
 // 전체 todo 리스트 조회
 export async function getTodos(memberId) {

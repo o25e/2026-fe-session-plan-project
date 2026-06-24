@@ -83,13 +83,23 @@ function Main() {
         try {
             const memberId = localStorage.getItem("memberId");
 
-            await createTodo(
+            const newTodo = await createTodo(
                 memberId,
                 formatDateTime(selectedDate),
                 input
             );
 
-            await loadTodos();
+            setTodos((prevTodos) => [
+                ...prevTodos,
+                {
+                    id: newTodo.todo_id,
+                    text: newTodo.content,
+                    completed: newTodo.is_checked,
+                    emoji: newTodo.emoji ?? "",
+                    date: newTodo.date.split("T")[0],
+                },
+            ]);
+
             setInput("");
         } catch (error) {
             alert(error.message);
